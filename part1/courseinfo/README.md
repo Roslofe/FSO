@@ -1,3 +1,5 @@
+(Created automatically when creating the App. Excercise instructions said to submit all files related to the application, so I have left it intact)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
