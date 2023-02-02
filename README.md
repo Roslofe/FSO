@@ -11,3 +11,5 @@ Exercise 0.4: Depiction of creating a new note
 Exercise 0.5: Depiction of loading a single-page app
 
 Exercise 0.6: Depiction of creating a new note
+## Part 1
+Exercise 1.1: Step 1 of a multi-part-exercise. Breaking an application down to multiple components.
