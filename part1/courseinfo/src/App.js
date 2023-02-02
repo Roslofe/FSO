@@ -4,7 +4,7 @@
  * @returns A rendering of the course title
  */
 const Header = (props) => {
-  return(
+  return (
     <div>
       <h1>{props.course}</h1>
     </div>
@@ -12,22 +12,28 @@ const Header = (props) => {
 }
 
 /**
- * Renders the name and amount of exercises for each part
+ * Renders the information of an individual part
+ * @param props Contains the name and number of exercises for a part 
+ * @returns A rendering of the part information
+ */
+const Part = (props) => {
+  return (
+    <div>
+      <p>{props.name} {props.exercises}</p>
+    </div>
+  )
+}
+/**
+ * Renders the name and amount of exercises for all parts
  * @param props Contains the name of each part and their exercise number
- * @returns A rendering of the parts information
+ * @returns A rendering of the parts' information
  */
 const Content = (props) => {
   return (
     <div>
-      <p>
-        {props.part1} {props.exercises1}
-      </p>
-      <p>
-        {props.part2} {props.exercises2}
-      </p>
-      <p>
-        {props.part3} {props.exercises3}
-      </p>
+      <Part name={props.part1} exercises={props.exercises1}/>
+      <Part name={props.part2} exercises={props.exercises2}/>
+      <Part name={props.part3} exercises={props.exercises3}/>
     </div>
   )
 }
