@@ -65,6 +65,19 @@ const Stat = ({ stat, num}) => (
   <p>{stat} <b>{num}</b></p>
 )
 
+const Statistics = ({g, n, b}) => {
+  return (
+    <div>
+      <h1>Statistics</h1>
+          <Stat stat={"Good"} num={g}/>
+          <Stat stat={"Neutral"} num={n}/>
+          <Stat stat={"Bad"} num={b}/>
+          <Stat stat={"All"} num={calculateTotal(g, n, b)} />
+          <Stat stat={"Average"} num={calculateAvg(g, n, b)} />
+          <Stat stat={"Positive"} num={calculatePos(g, calculateTotal(g, n, b))} />
+    </div>
+  )
+}
 
 /**
  * The root of the application
@@ -84,15 +97,7 @@ const App = () => {
         <Button handleClick={() => setNeutral(neutral +1)} descr={"Neutral"}/>
         <Button handleClick={() => setBad(bad +1)} descr={"Bad"}/>
       </div>
-      <div>
-        <h1>Statistics</h1>
-        <Stat stat={"Good"} num={good}/>
-        <Stat stat={"Neutral"} num={neutral}/>
-        <Stat stat={"Bad"} num={bad}/>
-        <Stat stat={"All"} num={calculateTotal(good, neutral, bad)} />
-        <Stat stat={"Average"} num={calculateAvg(good, neutral, bad)} />
-        <Stat stat={"Positive"} num={calculatePos(good, calculateTotal(good, neutral, bad))} />
-      </div>
+      <Statistics g={good} n={neutral} b={bad} />
     </div>
   )
 }
