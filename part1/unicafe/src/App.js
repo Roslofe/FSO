@@ -1,16 +1,74 @@
 import { useState } from 'react'
 
+/**
+ * 
+ * @param g The number of good reviews 
+ * @param n ~.~ neutral reviews
+ * @param b ~.~ bad reviews
+ * @returns The total number of reviews
+ */
+const calculateTotal = (g, n, b) => {
+  const sum = g + n + b
+  return sum
+}
+
+/**
+ * Calculates the average of the reviews. Good reviews have a weight of 1,
+ * neutral have the weight 0, and bad -1
+ * @param g The number of good reviews 
+ * @param n ~.~ neutral reviews
+ * @param b ~.~ bad reviews
+ * @returns The average of the given reviews
+ */
+const calculateAvg = (g, n, b) => {
+  const sum = calculateTotal(g, n, b)
+  if (sum != 0 ) {
+    const avg = (g * 1 + b * -1) / sum
+    return avg
+  } else {
+    return 0
+  }
+}
+
+/**
+ * Calculates the percentage of positive reviews
+ * @param g Number of positive reviews
+ * @param total Total number of reviews 
+ * @returns 
+ */
+const calculatePos = (g, total) => {
+  if (g != 0) {
+    const ratio = g / total
+    const percent = String(ratio * 100)
+    return percent.concat("%")
+  } else {
+    return "0%"
+  }
+  
+}
+
+/**
+ * Renders buttons for providing feedback
+ * @returns The rendering of a button
+ */
 const Button = ({ handleClick, descr }) => (
   <button onClick={handleClick}>
     {descr}
   </button>
 )
 
+/**
+ * Renders the statistics 
+ * @returns The description and value of the statistic
+ */
 const Stat = ({ stat, num}) => (
   <p>{stat} <b>{num}</b></p>
 )
 
 
+/**
+ * The root of the application
+ */
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
@@ -31,8 +89,10 @@ const App = () => {
         <Stat stat={"Good"} num={good}/>
         <Stat stat={"Neutral"} num={neutral}/>
         <Stat stat={"Bad"} num={bad}/>
+        <Stat stat={"All"} num={calculateTotal(good, neutral, bad)} />
+        <Stat stat={"Average"} num={calculateAvg(good, neutral, bad)} />
+        <Stat stat={"Positive"} num={calculatePos(good, calculateTotal(good, neutral, bad))} />
       </div>
-      
     </div>
   )
 }
