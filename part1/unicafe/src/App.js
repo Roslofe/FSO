@@ -66,17 +66,26 @@ const Stat = ({ stat, num}) => (
 )
 
 const Statistics = ({g, n, b}) => {
-  return (
-    <div>
-      <h1>Statistics</h1>
-          <Stat stat={"Good"} num={g}/>
-          <Stat stat={"Neutral"} num={n}/>
-          <Stat stat={"Bad"} num={b}/>
-          <Stat stat={"All"} num={calculateTotal(g, n, b)} />
-          <Stat stat={"Average"} num={calculateAvg(g, n, b)} />
-          <Stat stat={"Positive"} num={calculatePos(g, calculateTotal(g, n, b))} />
-    </div>
-  )
+  if (g == 0 && n == 0 && b == 0) {
+    return (
+      <div>
+        <h1>Statistics</h1>
+        <p>No feedback yet</p>
+      </div>
+    )
+  } else {
+    return (
+      <div>
+        <h1>Statistics</h1>
+            <Stat stat={"Good"} num={g}/>
+            <Stat stat={"Neutral"} num={n}/>
+            <Stat stat={"Bad"} num={b}/>
+            <Stat stat={"All"} num={calculateTotal(g, n, b)} />
+            <Stat stat={"Average"} num={calculateAvg(g, n, b)} />
+            <Stat stat={"Positive"} num={calculatePos(g, calculateTotal(g, n, b))} />
+      </div>
+    )
+  }
 }
 
 /**
