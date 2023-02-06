@@ -22,7 +22,7 @@ const calculateTotal = (g, n, b) => {
  */
 const calculateAvg = (g, n, b) => {
   const sum = calculateTotal(g, n, b)
-  if (sum != 0 ) {
+  if (sum !== 0 ) {
     const avg = (g * 1 + b * -1) / sum
     return avg
   } else {
@@ -37,7 +37,7 @@ const calculateAvg = (g, n, b) => {
  * @returns 
  */
 const calculatePos = (g, total) => {
-  if (g != 0) {
+  if (g !== 0) {
     const ratio = g / total
     const percent = String(ratio * 100)
     return percent.concat("%")
@@ -61,12 +61,12 @@ const Button = ({ handleClick, descr }) => (
  * Renders the statistics 
  * @returns The description and value of the statistic
  */
-const Stat = ({ stat, num}) => (
-  <p>{stat} <b>{num}</b></p>
+const StatisticLine = ({ text, value}) => (
+  <p>{text} <b>{value}</b></p>
 )
 
 const Statistics = ({g, n, b}) => {
-  if (g == 0 && n == 0 && b == 0) {
+  if (g === 0 && n === 0 && b === 0) {
     return (
       <div>
         <h1>Statistics</h1>
@@ -77,12 +77,12 @@ const Statistics = ({g, n, b}) => {
     return (
       <div>
         <h1>Statistics</h1>
-            <Stat stat={"Good"} num={g}/>
-            <Stat stat={"Neutral"} num={n}/>
-            <Stat stat={"Bad"} num={b}/>
-            <Stat stat={"All"} num={calculateTotal(g, n, b)} />
-            <Stat stat={"Average"} num={calculateAvg(g, n, b)} />
-            <Stat stat={"Positive"} num={calculatePos(g, calculateTotal(g, n, b))} />
+            <StatisticLine text={"Good"} value={g}/>
+            <StatisticLine text={"Neutral"} value={n}/>
+            <StatisticLine text={"Bad"} value={b}/>
+            <StatisticLine text={"All"} value={calculateTotal(g, n, b)} />
+            <StatisticLine text={"Average"} value={calculateAvg(g, n, b)} />
+            <StatisticLine text={"Positive"} value={calculatePos(g, calculateTotal(g, n, b))} />
       </div>
     )
   }
