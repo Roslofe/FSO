@@ -62,7 +62,10 @@ const Button = ({ handleClick, descr }) => (
  * @returns The description and value of the statistic
  */
 const StatisticLine = ({ text, value}) => (
-  <p>{text} <b>{value}</b></p>
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
 )
 
 const Statistics = ({g, n, b}) => {
@@ -77,12 +80,16 @@ const Statistics = ({g, n, b}) => {
     return (
       <div>
         <h1>Statistics</h1>
+        <table>
+          <tbody>
             <StatisticLine text={"Good"} value={g}/>
             <StatisticLine text={"Neutral"} value={n}/>
             <StatisticLine text={"Bad"} value={b}/>
             <StatisticLine text={"All"} value={calculateTotal(g, n, b)} />
             <StatisticLine text={"Average"} value={calculateAvg(g, n, b)} />
             <StatisticLine text={"Positive"} value={calculatePos(g, calculateTotal(g, n, b))} />
+          </tbody>
+        </table>
       </div>
     )
   }
