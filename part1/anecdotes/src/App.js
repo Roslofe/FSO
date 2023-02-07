@@ -14,11 +14,36 @@ const chooseAnecdote = ( anCount ) => {
  * @param handleClick A method that determines the button's function 
  * @returns A rendering of the button
  */
-const Button = ({handleClick}) => (
+const Button = ({handleClick, text}) => (
   <button onClick={handleClick}>
-    Next anecdote
+    {text}
   </button>
 )
+
+/**
+ * Renders an individual anecdote and its votes
+ * @param text The anecdote itself
+ * @param votes The number of votes received by the anecdote
+ * @returns 
+ */
+ const Anecdote = ({text, votes}) => (
+  <div>
+    <p>{text}</p>
+    <p>Has {votes} votes</p>
+  </div>
+ )
+
+/**
+ * Increases the number of votes of one anecdote
+ * @param index Index of the anecdote being voted on
+ * @param votes The array containing all votes
+ * @returns The new array with the updated votes
+ */
+const increaseVote = (index, votes) => {
+  const newList = [...votes]
+  newList[index] += 1
+  return newList
+}
 
 /**
  * Acts as the root of the application, and contains all anecdotes.
@@ -36,11 +61,13 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(chooseAnecdote(anecdotes.length))
+  const [votes, addVote] = useState(Array(anecdotes.length).fill(0))
 
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <Button handleClick={() => setSelected(chooseAnecdote(anecdotes.length))} />
+      <Anecdote text={anecdotes[selected]} votes={votes[selected]}/>
+      <Button handleClick={() => addVote(increaseVote(selected, votes))} text={"Vote"}/>
+      <Button handleClick={() => setSelected(chooseAnecdote(anecdotes.length))} text={"Next anecdote"}/>
     </div>
   )
 }
