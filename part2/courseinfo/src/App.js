@@ -1,14 +1,6 @@
 const Header = ({ course }) => <h1>{course}</h1>
 
-const Total = ({ counts }) => {
-  let sum = 0
-  counts.forEach(exercises => {
-    sum += exercises
-  });
-  return (
-    <b>Total of exercises {sum}</b>
-  ) 
-}
+const Total = ({ counts }) => <b>Total of exercises {counts.reduce((acc, curr) => acc + curr)}</b>
 
 const Part = ({ part }) => 
   <p>
