@@ -1,13 +1,93 @@
 import { useState } from 'react'
 
+/**
+ * Renders the filtering
+ * @param currFilter The substring being used in filtering
+ * @param filterChange A function specifying what happens when the filter changes 
+ * @returns A rendering of the filter form
+ */
+const Filter = ({currFilter, filterChange}) => (
+  <form>
+    <div>
+      Filter shown with:
+      <input
+        value={currFilter}
+        onChange={filterChange}
+      />
+    </div>
+  </form>
+)
+
+/**
+ * Renders the form used for adding people
+ * @param onSubmit A function determining what happens once the form is submitted
+ * @param newName The name that is being added to the phonebook
+ * @param onNameChange A function determining what happens when the name input changes
+ * @param newNumber The number that is being added to the phonebook
+ * @param onNumberChange A function determining what happens when the number input changes
+ * @returns The rendering of the form
+ */
+const PersonCreation = ({onSubmit, newName, onNameChange, newNumber, onNumberChange}) => (
+  <form onSubmit={onSubmit}>
+    <div>
+      Name:
+      <input
+        value={newName}
+        onChange={onNameChange}
+      />
+    </div>
+    <div>
+      Number:
+      <input 
+        value={newNumber}
+        onChange={onNumberChange}
+      />
+    </div>
+    <div>
+      <button type="submit">Add</button>
+    </div>
+  </form>
+)
+
+/**
+ * Renders singular people
+ * @param name The name of the person
+ * @param number The phone number of the person
+ * @returns A rendering of the personal information
+ */
+const Person = ({name, number}) => <p>{name} {number}</p>
+
+/**
+ * Renders the list of people
+ * @param people The people being rendered (those who match the filter)
+ * @returns A rendering of the list of people
+ */
+const PersonList = ({people}) => (
+  <>
+    {people.map(person => 
+      <Person key={person.name} name={person.name} number={person.number} />
+      )}
+  </>
+)
+
+/**
+ * Acts as the root of the application, and stores the states and event handlers
+ */
 const App = () => {
+  //Data
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456'}
   ]) 
+
+  //States
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [currFilter, setFilter] = useState('')
 
+  /**
+   * Handles the creation of a new person 
+   * @returns An alert if the name is already in use, otherwise nothing
+   */
   const addPerson = (event) => {
     event.preventDefault()
     if(persons.map(person => person.name).includes(newName)) {
@@ -21,6 +101,7 @@ const App = () => {
     }
   }
 
+  //Event handlers, all update their respective values
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -36,37 +117,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
-        <div>
-          Filter shown with: 
-          <input
-            value={currFilter}
-            onChange={handleFilterChange}
-          />
-        </div>
-      </form>
+      <Filter currFilter={currFilter} filterChange={handleFilterChange} />
       <h3>Add a new person</h3>
-      <form onSubmit={addPerson}>
-        <div>
-          Name: 
-          <input 
-            value={newName}
-            onChange={handleNameChange}
-          />
-        </div>
-        <div>
-          Number:
-          <input
-            value={newNumber}
-            onChange={handleNumberChange}
-          />
-        </div>
-        <div>
-          <button type="submit">Add</button>
-        </div>
-      </form>
+      <PersonCreation onSubmit={addPerson} onNameChange={handleNameChange} onNumberChange={handleNumberChange} newName={newName} newNumber={newNumber} />
       <h3>Numbers</h3>
-      {persons.filter(person => person.name.toLowerCase().includes(currFilter.toLowerCase())).map(person => <p key={person.name}>{person.name} {person.number}</p>)}
+      <PersonList people={persons.filter(person => person.name.toLowerCase().includes(currFilter.toLowerCase()))} />
     </div>
   )
 }
