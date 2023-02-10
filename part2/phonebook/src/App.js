@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 /**
  * Renders the filtering
@@ -75,14 +76,21 @@ const PersonList = ({people}) => (
  */
 const App = () => {
   //Data
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456'}
-  ]) 
+  const [persons, setPersons] = useState([]) 
 
   //States
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [currFilter, setFilter] = useState('')
+
+  //Retrieves data from the db
+  const hook = () => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => setPersons(response.data))
+  }
+
+  useEffect(hook, [])
 
   /**
    * Handles the creation of a new person 
