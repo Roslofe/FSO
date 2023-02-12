@@ -95,16 +95,17 @@ const App = () => {
       })
   }, [])
 
-  /**
-   * Handles the creation of a new person 
-   * @returns An alert if the name is already in use, otherwise nothing
-   */
+ /**
+  * Handles the addition of a new person. If the added name is already in the phonebook,
+  * the user can choose to update their phone number. 
+  */
   const addPerson = (event) => {
     event.preventDefault()
     if(persons.map(person => person.name).includes(newName)) {
-      return (
-        alert(`${newName} is already added to phonebook`)
-      )
+      if(window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+        const toUpdate = persons.find(person => person.name === newName)
+        updateNumber(toUpdate)
+      }
     } else {
       const newPerson = {
         name: newName, 
@@ -120,6 +121,27 @@ const App = () => {
     }
   }
 
+  /**
+   * Updates the phone number of a person
+   * @param origData The original information of the person
+   */
+  const updateNumber = (origData) => {
+    const changedPerson = { ...origData, number: newNumber}
+    personService
+      .updatePerson(changedPerson, origData.id)
+      .then(updatedPerson => {
+        setPersons(persons.map(person => person.id !== changedPerson.id ? person : updatedPerson))
+        setNewName("")
+        setNewNumber("")
+      })
+  }
+
+  /**
+   * Removes a person. A person is only deleted if the user confirms 
+   * the deletion
+   * @param name Name of the person being deleted
+   * @param id Id ~.~
+   */
   const removePerson = (name, id) => {
     if (window.confirm(`Delete ${name}`)) {
       personService.removePerson(id)
