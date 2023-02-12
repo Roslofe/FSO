@@ -3,12 +3,33 @@ import personService from './services/persons'
 import './index.css'
 
 
-const Notification = ({ message, notifType}) => {
+/**
+ * Shows notifications upon successful actions
+ * @param message The message to be shown 
+ * @returns The notification with the desired text
+ */
+const Notification = ({ message }) => {
   if (message === null) {
     return null
   }
   return (
     <div className='notification'>
+      {message}
+    </div>
+  )
+}
+
+/**
+ * Shows error messages
+ * @param message The message to be shown 
+ * @returns A notification describing the error
+ */
+const Error = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className='error'>
       {message}
     </div>
   )
@@ -100,6 +121,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [currFilter, setFilter] = useState('')
   const [notificationMsg, setNotification] = useState(null)
+  const [errorMsg, setError] = useState(null)
 
   useEffect(() => {
     personService
@@ -131,7 +153,7 @@ const App = () => {
           setPersons(persons.concat(createdPerson))
           setNewName("")
           setNewNumber('')
-          updateNotification(`Added ${createdPerson.name}`)
+          updateNotification(`Added ${createdPerson.name}`, false)
         })
     }
   }
@@ -148,10 +170,10 @@ const App = () => {
         setPersons(persons.map(person => person.id !== changedPerson.id ? person : updatedPerson))
         setNewName("")
         setNewNumber("")
-        updateNotification(`Changed the number of ${updatedPerson.name}`)
+        updateNotification(`Changed the number of ${updatedPerson.name}`, false)
       })
       .catch(() => {
-        alert(`${changedPerson.name} was already deleted`)
+        updateNotification(`${changedPerson.name} was already deleted`, true)
         setPersons(persons.filter(person => person.id !== changedPerson.id))
       })
   }
@@ -169,11 +191,23 @@ const App = () => {
     }
   }
 
-  const updateNotification = (msg) => {
-    setNotification(msg)
-    setTimeout(() => {
-      setNotification(null)
-    }, 5000)
+  /**
+   * Handles updating both notifications and error messages
+   * @param msg The message to be shown to the user
+   * @param isError A boolean value determining if the message is for an error or notification
+   */
+  const updateNotification = (msg, isError) => {
+    if (isError) {
+      setError(msg)
+      setTimeout(() => {
+        setError(null)
+      }, 5000)
+    } else {
+      setNotification(msg)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
+    }
   }
 
   //Event handlers, all update their respective values
@@ -193,6 +227,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Notification message={notificationMsg} />
+      <Error message={errorMsg} />
       <Filter currFilter={currFilter} filterChange={handleFilterChange} />
       <h3>Add a new person</h3>
       <PersonCreation onSubmit={addPerson} onNameChange={handleNameChange} onNumberChange={handleNumberChange} newName={newName} newNumber={newNumber} />
