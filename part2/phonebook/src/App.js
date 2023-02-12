@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 /**
  * Renders the filtering
@@ -83,14 +83,13 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [currFilter, setFilter] = useState('')
 
-  //Retrieves data from the db
-  const hook = () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => setPersons(response.data))
-  }
-
-  useEffect(hook, [])
+  useEffect(() => {
+    personService
+      .getAll()
+      .then(basePpl => {
+        setPersons(basePpl)
+      })
+  }, [])
 
   /**
    * Handles the creation of a new person 
@@ -107,10 +106,10 @@ const App = () => {
         name: newName, 
         number: newNumber
       }
-      axios
-        .post('http://localhost:3001/persons', newPerson)
-        .then(response => {
-          setPersons(persons.concat(response.data))
+      personService
+        .addPerson(newPerson)
+        .then(createdPerson => {
+          setPersons(persons.concat(createdPerson))
           setNewName("")
           setNewNumber('')
         })
