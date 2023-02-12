@@ -134,6 +134,10 @@ const App = () => {
         setNewName("")
         setNewNumber("")
       })
+      .catch(() => {
+        alert(`${changedPerson.name} was already deleted`)
+        setPersons(persons.filter(person => person.id !== changedPerson.id))
+      })
   }
 
   /**
