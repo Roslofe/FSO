@@ -1,5 +1,18 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import './index.css'
+
+
+const Notification = ({ message, notifType}) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className='notification'>
+      {message}
+    </div>
+  )
+}
 
 /**
  * Renders the filtering
@@ -86,6 +99,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [currFilter, setFilter] = useState('')
+  const [notificationMsg, setNotification] = useState(null)
 
   useEffect(() => {
     personService
@@ -117,6 +131,7 @@ const App = () => {
           setPersons(persons.concat(createdPerson))
           setNewName("")
           setNewNumber('')
+          updateNotification(`Added ${createdPerson.name}`)
         })
     }
   }
@@ -133,6 +148,7 @@ const App = () => {
         setPersons(persons.map(person => person.id !== changedPerson.id ? person : updatedPerson))
         setNewName("")
         setNewNumber("")
+        updateNotification(`Changed the number of ${updatedPerson.name}`)
       })
       .catch(() => {
         alert(`${changedPerson.name} was already deleted`)
@@ -153,6 +169,13 @@ const App = () => {
     }
   }
 
+  const updateNotification = (msg) => {
+    setNotification(msg)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+  }
+
   //Event handlers, all update their respective values
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -169,6 +192,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMsg} />
       <Filter currFilter={currFilter} filterChange={handleFilterChange} />
       <h3>Add a new person</h3>
       <PersonCreation onSubmit={addPerson} onNameChange={handleNameChange} onNumberChange={handleNumberChange} newName={newName} newNumber={newNumber} />
