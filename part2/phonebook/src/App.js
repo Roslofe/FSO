@@ -56,18 +56,22 @@ const PersonCreation = ({onSubmit, newName, onNameChange, newNumber, onNumberCha
  * @param number The phone number of the person
  * @returns A rendering of the personal information
  */
-const Person = ({name, number}) => <p>{name} {number}</p>
+const Person = ({name, id, number, action}) => (
+  <div>
+    <span>{name} {number}</span><button onClick={() => action(name, id)}>Delete</button>
+  </div>
+)
 
 /**
  * Renders the list of people
  * @param people The people being rendered (those who match the filter)
  * @returns A rendering of the list of people
  */
-const PersonList = ({people}) => (
+const PersonList = ({people, action}) => (
   <>
     {people.map(person => 
-      <Person key={person.id} name={person.name} number={person.number} />
-      )}
+      <Person key={person.id} name={person.name} number={person.number} id={person.id} action={action} />
+    )}
   </>
 )
 
@@ -116,6 +120,13 @@ const App = () => {
     }
   }
 
+  const removePerson = (name, id) => {
+    if (window.confirm(`Delete ${name}`)) {
+      personService.removePerson(id)
+      setPersons(persons.filter(person => person.id !== id))
+    }
+  }
+
   //Event handlers, all update their respective values
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -136,7 +147,7 @@ const App = () => {
       <h3>Add a new person</h3>
       <PersonCreation onSubmit={addPerson} onNameChange={handleNameChange} onNumberChange={handleNumberChange} newName={newName} newNumber={newNumber} />
       <h3>Numbers</h3>
-      <PersonList people={persons.filter(person => person.name.toLowerCase().includes(currFilter.toLowerCase()))} />
+      <PersonList people={persons.filter(person => person.name.toLowerCase().includes(currFilter.toLowerCase()))} action={removePerson} />
     </div>
   )
 }
