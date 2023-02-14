@@ -1,13 +1,25 @@
-
+/**
+ * A button that toggles the showing of an individual country vs a list
+ * @param country The country it is attached to
+ * @param view A boolean determining if a single country is shown
+ * @param onClick A function for pressing the button
+ * @returns A rendering of a button
+ */
+const Button = ({ country, view, onClick}) => (
+    <button onClick={() => onClick(country.cca2)}>{!view ? 'Show' : 'Hide'}</button>   
+)
 /**
  * Renders the information of a single country.
  * Provides information on the capital, area, official languages,
  * and the flag of the country
  * @param country An object containing the data 
+ * @param view A boolean determining if a single country is shown
+ * @param onClick A function for pressing a button
  * @returns The rendering of the data
  */
-const CountryInfo = ({ country }) => (
+const CountryInfo = ({ country, view, onClick }) => (
     <div>
+        <Button country={country} view={view} onClick={onClick} />
         <h1>{country.name.common}</h1>
         <p>Capital: {country.capital}</p>
         <p>Area: {country.area}</p>
@@ -28,22 +40,27 @@ const CountryInfo = ({ country }) => (
  * the names of each country are shown. If there is only one, more detailed
  * information is provided. Otherwise the function renders nothing.
  * @param countries An array of countries 
+ * @param view A boolean determining if a single country is shown
+ * @param onClick A function for pressing a button
  * @returns A rendering which depends on the input.
  */
-const CountryData = ({ countries }) => {
+const CountryData = ({ countries, view, onClick }) => {
     if (countries.length > 10) {
         return null
-    } else if (countries.length !== 1){
+    } else if (!view){
         return (
-        <>
-            {countries.map(country => 
-        <p key={country.cca2}>{country.name.common}</p>
-        )}
-        </>
+        <div>
+            {countries.map(country => (
+                <div key={country.cca2}>
+                    <span>{country.name.common}</span>
+                    <Button country={country} view={view} onClick={onClick} />
+                </div>
+            ))}
+        </div>
         )
     } else {
         return (
-        <CountryInfo country={countries[0]} />
+        <CountryInfo country={countries[0]} view={view} onClick={onClick} />
         )
     }
 }
