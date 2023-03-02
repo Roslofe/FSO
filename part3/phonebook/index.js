@@ -5,6 +5,7 @@ const cors = require('cors')
 const app = express()
 
 const Person = require('./models/person')
+const person = require('./models/person')
 
 app.use(cors())
 app.use(express.json())
@@ -90,14 +91,13 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    const person = {
-        id: generateId(),
+    const person = new Person ({
         name: body.name,
         number: Number(body.number),
-    }
-    numbers = numbers.concat(person)
-    response.json(person)
-    
+    })
+    person.save().then(saved => {
+        response.json(saved)
+    })
 })
 
 const PORT = process.env.PORT
