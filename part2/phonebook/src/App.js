@@ -155,6 +155,9 @@ const App = () => {
           setNewNumber('')
           updateNotification(`Added ${createdPerson.name}`, false)
         })
+        .catch(error => {
+          updateNotification(error.response.data.error, true)
+        })
     }
   }
 
