@@ -125,7 +125,7 @@ app.post('/api/persons', (request, response, next) => {
 
     const person = new Person ({
         name: body.name,
-        number: Number(body.number),
+        number: body.number,
     })
     person.save()
         .then(saved => {
