@@ -112,3 +112,21 @@ describe('favourite list', () => {
     expect(result).toEqual(listWithManySame[1])
   })
 })
+
+describe('most blogs', () => {
+  test('undefined when there are none', () => {
+    const result = listHelper.mostBlogs([])
+    expect(result).toBe(undefined)
+  })
+
+  test('with a list of one, return it', () => {
+    const result = listHelper.mostBlogs(listWithOne)
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', blogs: 1 })
+  })
+
+  test('with more than one, returns the one with most', () => {
+    const result = listHelper.mostBlogs(listWithMany)
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', blogs: 2 })
+  })
+
+})
