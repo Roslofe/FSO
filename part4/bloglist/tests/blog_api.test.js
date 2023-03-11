@@ -45,6 +45,28 @@ test('if likes-property is missing, defaulted to 0', async () => {
   expect(addedBlog.body.likes).toBe(0)
 })
 
+test('adding a blog with no title responds with status 400', async () => {
+  const faultyBlog = {
+    author: helper.newBlog.author,
+    url: helper.newBlog.url
+  }
+
+  await api.post('/api/blogs')
+    .send(faultyBlog)
+    .expect(400)
+})
+
+test('adding a blog with no url responds with status 400', async () => {
+  const faultyBlog = {
+    title: helper.newBlog.title,
+    author: helper.newBlog.author
+  }
+
+  await api.post('/api/blogs')
+    .send(faultyBlog)
+    .expect(400)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
