@@ -80,6 +80,33 @@ describe('when there is initially some blogs saved', () => {
       expect(finalBlogs).toHaveLength(helper.initialBlogs.length - 1)
     })
   })
+
+  describe('updating posts', () => {
+    test('blogs can be updated', async () => {
+      const updated = {
+        title: 'React patterns',
+        author: 'Michael Chan',
+        url: 'https://reactpatterns.com/',
+        likes: 10,
+      }
+
+      const initialBlog = helper.initialBlogs[0]
+      const updateRes = await api.put(`/api/blogs/${initialBlog._id}`)
+        .send(updated)
+        .expect(200)
+      expect(updateRes.body.likes).toBe(10)
+    })
+
+    test('updating nonexistent blogs should not work', async () => {
+      const deletedBlog = await api.post('/api/blogs')
+        .send(helper.newBlog)
+      await api.delete(`/api/blogs/${deletedBlog.body.id}`)
+        .expect(204)
+      await api.put(`/api/blogs/${deletedBlog.body.id}`)
+      const allBlogs = await helper.blogsInDb()
+      expect(allBlogs).toHaveLength(helper.initialBlogs.length)
+    })
+  })
 })
 
 afterAll(async () => {
