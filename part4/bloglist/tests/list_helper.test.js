@@ -130,3 +130,20 @@ describe('most blogs', () => {
   })
 
 })
+
+describe('most likes', () => {
+  test('undefined when there are none', () => {
+    const result = listHelper.mostLikes([])
+    expect(result).toBe(undefined)
+  })
+
+  test('with a list of one, return it', () => {
+    const result = listHelper.mostLikes(listWithOne)
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 5 })
+  })
+
+  test('with more than one, returns the one with most', () => {
+    const result = listHelper.mostLikes(listWithMany)
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', likes: 17 })
+  })
+})
