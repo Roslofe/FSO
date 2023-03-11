@@ -22,6 +22,14 @@ test('blogs should have id property', async () => {
   expect(response[0].id).toBeDefined()
 })
 
+test('new blogs should be able to be added', async () => {
+  await api.post('/api/blogs')
+    .send(helper.newBlog)
+    .expect(201)
+  const apiBlogs = await helper.blogsInDb()
+  expect(apiBlogs).toHaveLength(3)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
