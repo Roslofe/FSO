@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const { response } = require('../app')
 const app = require('../app')
 
 const api = supertest(app)
@@ -28,6 +29,20 @@ test('new blogs should be able to be added', async () => {
     .expect(201)
   const apiBlogs = await helper.blogsInDb()
   expect(apiBlogs).toHaveLength(3)
+})
+
+test('if likes-property is missing, defaulted to 0', async () => {
+  const newBlog = {
+    title: helper.newBlog.title,
+    author: helper.newBlog.author,
+    url: helper.newBlog.url
+  }
+
+  const addedBlog = await api.post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+
+  expect(addedBlog.body.likes).toBe(0)
 })
 
 afterAll(async () => {
