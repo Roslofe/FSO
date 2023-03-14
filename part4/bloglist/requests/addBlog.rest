@@ -1,11 +1,14 @@
 POST http://localhost:3003/api/blogs 
 content-type: application/json
+#Auth for user 'person1'
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBlcnNvbjEiLCJpZCI6IjY0MTAxYjkxZGExZmRmYjE2ZTAwMzhlNCIsImlhdCI6MTY3ODc4NjY0Mn0.odeXKIYBivKSx8gvLM-ZD_93SakNYrkxLtwjKzb1xOA
 
 {
     "title": "Exampleblog",
     "author": "Someone",
     "url": "exampleblog.com",
-    "likes": 3
+    "likes": 3,
+    "userid": "64101b91da1fdfb16e0038e4"
 }
 
 ###
