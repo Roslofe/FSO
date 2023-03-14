@@ -11,7 +11,7 @@ beforeEach(async () => {
   await User.deleteMany({})
 })
 
-describe('Creating users with no initial users', () => {
+describe('With one initial user', () => {
   test('correctly formatted user is created', async () => {
     await api.post('/api/users')
       .send(helper.newUser)
@@ -43,7 +43,7 @@ describe('Creating users with no initial users', () => {
       .expect(201)
     await api.post('/api/users')
       .send(helper.newUser)
-      .expect(500)
+      .expect(400)
   })
 })
 
