@@ -5,11 +5,15 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper =require('./test_helper')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
   await Blog.insertMany(helper.initialBlogs)
+  await User.deleteMany({})
+  await api.post('/api/users')
+    .send(helper.initialUser)
 })
 
 describe('when there is initially some blogs saved', () => {
@@ -24,8 +28,18 @@ describe('when there is initially some blogs saved', () => {
   })
 
   describe('adding new blogs', () => {
-    test('new blogs should be able to be added', async () => {
+    test('adding blogs without token returns 401', async () => {
       await api.post('/api/blogs')
+        .send(helper.newBlog)
+        .expect(401)
+    })
+
+    test('new blogs should be able to be added', async () => {
+      const user = await api.post('/api/login')
+        .send(helper.initialUser)
+      const token = 'Bearer ' + user.body.token
+      await api.post('/api/blogs')
+        .set('Authorization', token)
         .send(helper.newBlog)
         .expect(201)
       const apiBlogs = await helper.blogsInDb()
@@ -33,6 +47,10 @@ describe('when there is initially some blogs saved', () => {
     })
 
     test('if likes-property is missing, defaulted to 0', async () => {
+      const user = await api.post('/api/login')
+        .send(helper.initialUser)
+      const token = 'Bearer ' + user.body.token
+
       const newBlog = {
         title: helper.newBlog.title,
         author: helper.newBlog.author,
@@ -40,6 +58,7 @@ describe('when there is initially some blogs saved', () => {
       }
 
       const addedBlog = await api.post('/api/blogs')
+        .set('Authorization', token)
         .send(newBlog)
         .expect(201)
 
@@ -48,23 +67,31 @@ describe('when there is initially some blogs saved', () => {
 
     describe('when adding faulty entries', () => {
       test('adding a blog with no title responds with status 400', async () => {
+        const user = await api.post('/api/login')
+          .send(helper.initialUser)
+        const token = 'Bearer ' + user.body.token
         const faultyBlog = {
           author: helper.newBlog.author,
           url: helper.newBlog.url
         }
 
         await api.post('/api/blogs')
+          .set('Authorization', token)
           .send(faultyBlog)
           .expect(400)
       })
 
       test('adding a blog with no url responds with status 400', async () => {
+        const user = await api.post('/api/login')
+          .send(helper.initialUser)
+        const token = 'Bearer ' + user.body.token
         const faultyBlog = {
           title: helper.newBlog.title,
           author: helper.newBlog.author
         }
 
         await api.post('/api/blogs')
+          .set('Authorization', token)
           .send(faultyBlog)
           .expect(400)
       })
@@ -73,10 +100,24 @@ describe('when there is initially some blogs saved', () => {
 
   describe('deleting posts', () => {
     test('blogs can be deleted', async () => {
-      await api.delete(`/api/blogs/${helper.initialBlogs[0]._id}`)
+      const user = await api.post('/api/login')
+        .send(helper.initialUser)
+      const token = 'Bearer ' + user.body.token
+
+      //Add the new blog
+      const blog = await api.post('/api/blogs')
+        .set('Authorization', token)
+        .send(helper.newBlog)
+        .expect(201)
+      const initialBlogs = await helper.blogsInDb()
+      expect(initialBlogs).toHaveLength(helper.initialBlogs.length + 1)
+      await api.delete(`/api/blogs/${blog.body.id}`)
+        .set('Authorization', token)
         .expect(204)
       const finalBlogs = await helper.blogsInDb()
-      expect(finalBlogs).toHaveLength(helper.initialBlogs.length - 1)
+      //Should be the same since one was added and deleted
+      expect(finalBlogs).toHaveLength(helper.initialBlogs.length)
+      expect(finalBlogs.filter(b => b.id === blog.body.id)).toHaveLength(0)
     })
   })
 
@@ -97,9 +138,15 @@ describe('when there is initially some blogs saved', () => {
     })
 
     test('updating nonexistent blogs should not work', async () => {
+      const user = await api.post('/api/login')
+        .send(helper.initialUser)
+      const token = 'Bearer ' + user.body.token
+
       const deletedBlog = await api.post('/api/blogs')
+        .set('Authorization', token)
         .send(helper.newBlog)
       await api.delete(`/api/blogs/${deletedBlog.body.id}`)
+        .set('Authorization', token)
         .expect(204)
       await api.put(`/api/blogs/${deletedBlog.body.id}`)
       const allBlogs = await helper.blogsInDb()
