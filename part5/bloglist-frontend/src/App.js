@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -12,6 +14,9 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+
+  const [msg, setMsg] = useState(null)
+  const [isError, setError] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -38,8 +43,9 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      updateNotif('login successful', false)
     } catch (exception) {
-      console.log('login failed')
+      updateNotif('wrong username or password failed', true)
     }
   }
 
@@ -48,6 +54,7 @@ const App = () => {
     window.localStorage.clear()
     blogService.setToken(null)
     setUser(null)
+    updateNotif('logged out', false)
   }
 
   const handleBlogCreation = async (event) => {
@@ -63,16 +70,25 @@ const App = () => {
       setTitle('')
       setAuthor('')
       setUrl('')
+      updateNotif(`a new blog ${result.title} by ${result.author} added`, false)
     } catch (exception) {
-      console.log('creation failed')
-      console.log(exception)
+      updateNotif('adding a blog failed', true)
     }
+  }
+
+  const updateNotif = (msg, error) => {
+    setError(error)
+    setMsg(msg)
+    setTimeout(() => {
+      setMsg(null)
+    }, 5000)
   }
 
   if (user === null) {
     return (
       <div>
         <h1>Log into application</h1>
+        <Notification msg={msg} isError={isError}/>
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -90,6 +106,7 @@ const App = () => {
     return (
        <div>
         <h2>blogs</h2>
+        <Notification msg={msg} isError={isError}/>
         <form onSubmit={handleLogout}>
           <div>
             {user.name} logged in
