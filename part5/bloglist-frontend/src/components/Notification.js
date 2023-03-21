@@ -9,7 +9,6 @@ const Notification = ({ msg, isError }) => {
       </div>
     )
   } else {
-    console.log('no')
     return (
       <div className="notifMsg">
         {msg}
