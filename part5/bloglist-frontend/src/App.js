@@ -105,7 +105,7 @@ const App = () => {
             <button type='submit'>logout</button>
           </div>
         </form>
-        <Togglable buttonLabel='new blog' ref={blogFormRef}>
+        <Togglable showLabel='add new blog' hideLabel='cancel' ref={blogFormRef}>
           <BlogForm addBlog={handleBlogCreation}/>
         </Togglable>
         {blogs.map(blog =>
