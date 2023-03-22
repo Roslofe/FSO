@@ -17,8 +17,10 @@ const createNew = async newBlog => {
     headers: { Authorization: token },
   }
 
-  const response = await axios.post(baseUrl, newBlog, config)
-  return response.data
+  const blogData = (await axios.post(baseUrl, newBlog, config)).data
+  const completeBlogData = (await getAll()).find(b => b.id === blogData.id)
+
+  return completeBlogData
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
