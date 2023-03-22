@@ -68,6 +68,17 @@ const App = () => {
     }
   }
 
+  const handleLikeUpdate = async (id, blog) => {
+    const result = await blogService.updateLikes(id, blog)
+    setBlogs(blogs.map(b => {
+      if (b.id === id) {
+        return result
+      } else {
+        return b
+      }}
+      ))
+  }
+
   const updateNotif = (msg, error) => {
     setError(error)
     setMsg(msg)
@@ -109,7 +120,7 @@ const App = () => {
           <BlogForm addBlog={handleBlogCreation}/>
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} updateBlogInfo={handleLikeUpdate}/>
         )}
       </div>
     )

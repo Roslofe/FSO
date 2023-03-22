@@ -7,6 +7,12 @@ const setToken = newToken => {
   token = `Bearer ${newToken}`
 }
 
+const getSingular = async id => {
+  const completeBlogData = (await getAll()).find(b => b.id === id)
+
+  return completeBlogData
+}
+
 const getAll = () => {
   const request = axios.get(baseUrl)
   return request.then(response => response.data)
@@ -18,10 +24,13 @@ const createNew = async newBlog => {
   }
 
   const blogData = (await axios.post(baseUrl, newBlog, config)).data
-  const completeBlogData = (await getAll()).find(b => b.id === blogData.id)
+  return await getSingular(blogData.id)
+}
 
-  return completeBlogData
+const updateLikes = async (id, updated) => {
+  const result = await axios.put(`${baseUrl}/${id}`, updated)
+  return await getSingular(result.data.id)
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, setToken, createNew }
+export default { getAll, setToken, createNew, updateLikes }
