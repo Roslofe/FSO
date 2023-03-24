@@ -19,7 +19,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs.sort((b1, b2) => b2.likes - b1.likes ) )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -76,7 +76,7 @@ const App = () => {
       } else {
         return b
       }}
-      ).sort((b1, b2) => b2.likes - b1.likes ))
+    ).sort((b1, b2) => b2.likes - b1.likes ))
   }
 
   const handleBlogDeletion = async (blog) => {
@@ -120,7 +120,7 @@ const App = () => {
     )
   } else {
     return (
-       <div>
+      <div>
         <h2>blogs</h2>
         <Notification msg={msg} isError={isError}/>
         <form onSubmit={handleLogout}>

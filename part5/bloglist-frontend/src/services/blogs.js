@@ -40,5 +40,4 @@ const deleteBlog = async toDelete => {
   return result
 }
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default { getAll, setToken, createNew, updateLikes, deleteBlog }

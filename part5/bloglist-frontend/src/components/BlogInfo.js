@@ -4,7 +4,7 @@ const BlogInfo = ({ blog, onLike, user, onDelete }) => {
       {blog.url}
       <div>
         {blog.likes}
-        <button onClick={(onLike)}>like</button>
+        <button onClick={onLike}>like</button>
       </div>
       {blog.user.name}
       { user.username === blog.user.username &&
