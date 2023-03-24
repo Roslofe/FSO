@@ -79,6 +79,19 @@ const App = () => {
       ).sort((b1, b2) => b2.likes - b1.likes ))
   }
 
+  const handleBlogDeletion = async (blog) => {
+    const isSure = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+    if (isSure) {
+      const deleteSuccess = (await blogService.deleteBlog(blog)).status
+      if (deleteSuccess === 204) {
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+        updateNotif(`Deleted ${blog.title}`, false)
+      } else {
+        updateNotif(`Deleting ${blog.title} failed`, true)
+      }
+    }
+  }
+
   const updateNotif = (msg, error) => {
     setError(error)
     setMsg(msg)
@@ -120,7 +133,7 @@ const App = () => {
           <BlogForm addBlog={handleBlogCreation}/>
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} updateBlogInfo={handleLikeUpdate}/>
+          <Blog key={blog.id} blog={blog} updateBlogInfo={handleLikeUpdate} user={user} onDelete={handleBlogDeletion}/>
         )}
       </div>
     )

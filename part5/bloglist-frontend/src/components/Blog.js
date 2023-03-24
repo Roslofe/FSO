@@ -1,7 +1,7 @@
 import BlogInfo from "./BlogInfo"
 import { useState } from "react"
 
-const Blog = ({blog, updateBlogInfo}) => {
+const Blog = ({blog, updateBlogInfo, user, onDelete}) => {
   const [showInfo, setShowInfo] = useState(false)
 
   const updateLike = async () => {
@@ -20,7 +20,7 @@ const Blog = ({blog, updateBlogInfo}) => {
   <div>
     {blog.title} {blog.author}
     <button onClick={() => setShowInfo(!showInfo)}>{showInfo ? 'hide' : 'view' }</button>
-    { showInfo && <BlogInfo blog={blog} onClick={updateLike}/>}
+    { showInfo && <BlogInfo blog={blog} onOnLike={updateLike} user={user} onDelete={onDelete}/>}
   </div>  
 )}
 
