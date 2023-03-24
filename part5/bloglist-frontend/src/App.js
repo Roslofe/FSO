@@ -18,7 +18,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs( blogs.sort((b1, b2) => b2.likes - b1.likes ) )
     )  
   }, [])
 
@@ -76,7 +76,7 @@ const App = () => {
       } else {
         return b
       }}
-      ))
+      ).sort((b1, b2) => b2.likes - b1.likes ))
   }
 
   const updateNotif = (msg, error) => {
