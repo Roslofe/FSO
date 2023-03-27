@@ -48,6 +48,32 @@ test('when the view-button is pressed, shows likes', async () => {
   expect(urlElement).toBeDefined()
   const likesElement = screen.queryByText('3')
   expect(likesElement).toBeDefined()
+})
 
+test('when a blog is liked twice, the event handler is called twice', async () => {
+  const blog = {
+    title: 'Test blog',
+    author: 'Example author',
+    url: 'notarealblog.com',
+    likes: 3,
+    user: {
+      name: 'Person 1',
+      id: 1,
+    }
+  }
 
+  const blogUser = {
+    username: 'Person1'
+  }
+  const mockLike = jest.fn()
+
+  render(<Blog blog={blog} user={blogUser} updateBlogInfo={mockLike}/>)
+
+  const user = userEvent.setup()
+  const viewButton = screen.getByText('view')
+  await user.click(viewButton)
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+  expect(mockLike.mock.calls).toHaveLength(2)
 })
