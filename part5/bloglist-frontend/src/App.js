@@ -45,7 +45,7 @@ const App = () => {
       setPassword('')
       updateNotif('login successful', false)
     } catch (exception) {
-      updateNotif('wrong username or password failed', true)
+      updateNotif('wrong username or password', true)
     }
   }
 
@@ -108,13 +108,13 @@ const App = () => {
         <form onSubmit={handleLogin}>
           <div>
             username
-            <input type='text' value={ username } name="Username" onChange={ ({ target }) => setUsername(target.value) }/>
+            <input type='text' id='Username' value={ username } name="Username" onChange={ ({ target }) => setUsername(target.value) }/>
           </div>
           <div>
             password
-            <input type='password' value={ password } name="Password" onChange={ ({ target }) => setPassword(target.value )}/>
+            <input type='password' id='Password' value={ password } name="Password" onChange={ ({ target }) => setPassword(target.value )}/>
           </div>
-          <button type='submit'>login</button>
+          <button id='login' type='submit'>login</button>
         </form>
       </div>
     )
