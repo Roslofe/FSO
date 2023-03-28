@@ -17,7 +17,7 @@ const Blog = ({ blog, updateBlogInfo, user, onDelete }) => {
   }
 
   return (
-    <div>
+    <div className='blogContent'>
       {blog.title} {blog.author}
       <button onClick={() => setShowInfo(!showInfo)}>{showInfo ? 'hide' : 'view' }</button>
       { showInfo && <BlogInfo blog={blog} onLike={updateLike} user={user} onDelete={onDelete}/>}

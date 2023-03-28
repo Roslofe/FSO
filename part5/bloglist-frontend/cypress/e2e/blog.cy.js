@@ -89,10 +89,23 @@ describe('Blog app', function() {
             })
         })
 
-        it.only('A blog cannot be deleted by another user', function() {
+        it('A blog cannot be deleted by another user', function() {
           cy.contains('view').click()
           cy.get('#deleteButton').should('not.exist')
         })
+      })
+
+      it.only('Blogs are displayed in the order of most likes', function() {
+        cy.contains('add new blog').click()
+        cy.get('.blog-title').type('Second blog')
+        cy.get('.blog-author').type('Example Author')
+        cy.get('.blog-url').type('notarealblogeither.com')
+        cy.contains('create').click()
+        cy.get('.blogContent').eq(0).should('contain', 'Example blog Example Author')
+        cy.get('.blogContent').eq(1)
+          .contains('view').click()
+          .parent().contains('like').click()
+        cy.get('.blogContent').eq(0).should('contain', 'Second blog Example Author')
       })
     })
 
