@@ -7,6 +7,7 @@ describe('Blog app', function() {
       password: 'secret'
     }
     cy.request('POST', 'http://localhost:3003/api/users', user)
+
     cy.visit('http://localhost:3000')
   })
 
@@ -67,9 +68,31 @@ describe('Blog app', function() {
         cy.contains('1')
       })
 
-      it.only('A blog can be deleted', function() {
+      it('A blog can be deleted', function() {
         cy.contains('Delete').click()
         cy.contains('Deleted Example blog')
+      })
+
+      describe('Blogs created by other users', function() {
+        beforeEach(function() {
+          cy.contains('logout').click()
+          const user = {
+            name: 'Example Person 2',
+            username: 'ExamplePerson2',
+            password: 'secret'
+          }
+          cy.request('POST', 'http://localhost:3003/api/users', user)
+          cy.request('POST', 'http://localhost:3003/api/login', { username: 'ExamplePerson2', password: 'secret' })
+            .then(response => {
+              localStorage.setItem('bloglistUser', JSON.stringify(response.body))
+              cy.visit('http://localhost:3000')
+            })
+        })
+
+        it.only('A blog cannot be deleted by another user', function() {
+          cy.contains('view').click()
+          cy.get('#deleteButton').should('not.exist')
+        })
       })
     })
 
