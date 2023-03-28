@@ -34,7 +34,7 @@ describe('Blog app', function() {
   })
 
   describe('When logged in', function() {
-    this.beforeEach(function() {
+    beforeEach(function() {
       cy.request('POST', 'http://localhost:3003/api/login', { username: 'ExamplePerson', password: 'secret' })
         .then(response => {
           localStorage.setItem('bloglistUser', JSON.stringify(response.body))
@@ -51,17 +51,28 @@ describe('Blog app', function() {
       cy.contains('Example blog')
     })
 
-    it('A blog can be liked', function() {
-      cy.contains('add new blog').click()
-      cy.get('.blog-title').type('Example blog')
-      cy.get('.blog-author').type('Example Author')
-      cy.get('.blog-url').type('notarealblog.com')
-      cy.contains('create').click()
-      cy.contains('view').click()
-      cy.contains('0')
-      cy.contains('like').click()
-      cy.contains('1')
+    describe('Blog operations', function() {
+      beforeEach(function() {
+        cy.contains('add new blog').click()
+        cy.get('.blog-title').type('Example blog')
+        cy.get('.blog-author').type('Example Author')
+        cy.get('.blog-url').type('notarealblog.com')
+        cy.contains('create').click()
+        cy.contains('view').click()
+      })
+
+      it('A blog can be liked', function() {
+        cy.contains('0')
+        cy.contains('like').click()
+        cy.contains('1')
+      })
+
+      it.only('A blog can be deleted', function() {
+        cy.contains('Delete').click()
+        cy.contains('Deleted Example blog')
+      })
     })
+
 
   })
 
