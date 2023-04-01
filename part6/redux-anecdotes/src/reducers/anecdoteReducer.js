@@ -28,6 +28,10 @@ const reducer = (state = initialState, action) => {
       const toVote = state.find(a => a.id === id)
       const afterVote = {...toVote, votes: toVote.votes + 1}
       return state.map(a => a.id !== id ? a : afterVote)
+    case 'NEW':
+      const content = action.payload.anecdote
+      const newAnecdote = asObject(content)
+      return [...state, newAnecdote]
     default:
       console.log(action.type)
       return state
