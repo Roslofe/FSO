@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { vote } from '../reducers/anecdoteReducer'
+import { incrementVote } from '../reducers/anecdoteReducer'
 import { displayMessage, resetMessage } from '../reducers/notificationReducer'
 
 const AnecdoteList = () => {
@@ -15,7 +15,7 @@ const AnecdoteList = () => {
 
   const click = (id) => {
     const toVoteFor = anecdotes.find(a => a.id === id)
-    dispatch(vote(id))
+    dispatch(incrementVote(toVoteFor))
     dispatch(displayMessage(`you voted for '${toVoteFor.content}'`))
     setTimeout(() => {
       dispatch(resetMessage())
