@@ -9,6 +9,9 @@ const AnecdoteForm = () => {
     onSuccess: () => {
       queryClient.invalidateQueries('anecdotes')
     },
+    onError: (error, query) => {
+      dispatch({ type: 'SET', payload: error.response.data.error})
+    }
   })
 
   const onCreate = async (event) => {
@@ -18,6 +21,7 @@ const AnecdoteForm = () => {
     console.log('new anecdote')
     newAnecdoteMutation.mutate({ content, votes: 0 })
     dispatch({type: 'SET', payload: `anecdote '${content}' created`})
+    
 }
 
   return (
