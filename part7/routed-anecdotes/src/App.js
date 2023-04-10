@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Routes, Route, Link, useMatch } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Routes, Route, Link, useMatch, useNavigate } from 'react-router-dom'
 
 const Menu = () => {
   const padding = {
@@ -14,8 +14,19 @@ const Menu = () => {
   )
 }
 
-const AnecdoteList = ({ anecdotes }) => (
+const Notification = ({ notif }) => {
+  if (notif === '') {
+    return null
+  } else {
+    return(
+      <p>{notif}</p>
+    )
+  }
+}
+
+const AnecdoteList = ({ anecdotes, notif }) => (
   <div>
+    <Notification notif={notif} />
     <h2>Anecdotes</h2>
     <ul>
       {anecdotes.map(anecdote => 
@@ -53,6 +64,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+  const navigate = useNavigate()
 
 
   const handleSubmit = (e) => {
@@ -63,6 +75,8 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    props.setNotification(`a new anecdote ${content} added!`)
+    navigate('/')
   }
 
   return (
@@ -120,6 +134,14 @@ const App = () => {
   ])
 
   const [notification, setNotification] = useState('')
+
+  useEffect(() => {
+    if (notification !== '') {
+      setTimeout(() => {
+        setNotification('')
+      }, 5000)
+    }
+  }, [notification])
   
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
@@ -150,8 +172,8 @@ const App = () => {
       </header>
       <Menu />
       <Routes>
-        <Route path='/' element={<AnecdoteList anecdotes={anecdotes}/>} />
-        <Route path='/create' element={<CreateNew addNew={addNew}/>} />
+        <Route path='/' element={<AnecdoteList anecdotes={anecdotes} notif={notification}/>} />
+        <Route path='/create' element={<CreateNew addNew={addNew} setNotification={setNotification}/>} />
         <Route path='/about' element={<About />} />
         <Route path='/anecdotes/:id' element={<Anecdote anecdote={anecdote} vote={vote}/>} />
       </Routes>
