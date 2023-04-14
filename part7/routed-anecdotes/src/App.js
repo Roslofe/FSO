@@ -70,6 +70,7 @@ const CreateNew = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    console.log(e)
     props.addNew({
       content: content.value,
       author: author.value,
@@ -78,6 +79,13 @@ const CreateNew = (props) => {
     })
     props.setNotification(`a new anecdote ${content.value} added!`)
     navigate('/')
+  }
+
+  const handleReset = (event) => {
+    event.preventDefault()
+    content.reset()
+    author.reset()
+    info.reset()
   }
 
   return (
@@ -96,7 +104,8 @@ const CreateNew = (props) => {
           url for more info
           <input {...info} />
         </div>
-        <button>create</button>
+        <button type='submit'>create</button>
+        <button onClick={handleReset}>reset</button>
       </form>
     </div>
   )
