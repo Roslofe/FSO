@@ -12,7 +12,6 @@ import './index.css'
 
 const App = () => {
   const dispatch = useDispatch()
-  const [blogs, setBlogsa] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -56,36 +55,6 @@ const App = () => {
     blogService.setToken(null)
     setUser(null)
     dispatch(updateNotif({ msg: 'logged out', isError: false }))
-  }
-
-  const handleLikeUpdate = async (id, blog) => {
-    const result = await blogService.updateLikes(id, blog)
-    setBlogs(
-      blogs
-        .map((b) => {
-          if (b.id === id) {
-            return result
-          } else {
-            return b
-          }
-        })
-        .sort((b1, b2) => b2.likes - b1.likes)
-    )
-  }
-
-  const handleBlogDeletion = async (blog) => {
-    const isSure = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
-    if (isSure) {
-      const deleteSuccess = (await blogService.deleteBlog(blog)).status
-      if (deleteSuccess === 204) {
-        setBlogsa(blogs.filter((b) => b.id !== blog.id))
-        dispatch(updateNotif({ msg: `Deleted ${blog.title}`, isError: false }))
-      } else {
-        dispatch(
-          updateNotif({ msg: `Deleting ${blog.title} failed`, isError: true })
-        )
-      }
-    }
   }
 
   if (user === null) {
@@ -138,11 +107,7 @@ const App = () => {
         >
           <BlogForm blogFormRef={blogFormRef} />
         </Togglable>
-        <BlogList
-          updateBlogInfo={handleLikeUpdate}
-          user={user}
-          onDelete={handleBlogDeletion}
-        />
+        <BlogList user={user} />
       </div>
     )
   }
