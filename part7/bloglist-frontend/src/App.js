@@ -1,25 +1,24 @@
 import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import BlogList from './components/BlogList'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { useDispatch } from 'react-redux'
 import { updateNotif } from './reducers/notifReducer'
+import { setBlogs } from './reducers/blogReducer'
 import './index.css'
 
 const App = () => {
   const dispatch = useDispatch()
-  const [blogs, setBlogs] = useState([])
+  const [blogs, setBlogsa] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) => setBlogs(blogs.sort((b1, b2) => b2.likes - b1.likes)))
+    blogService.getAll().then((blogs) => dispatch(setBlogs(blogs)))
   }, [])
 
   useEffect(() => {
@@ -59,22 +58,6 @@ const App = () => {
     dispatch(updateNotif({ msg: 'logged out', isError: false }))
   }
 
-  const handleBlogCreation = async (newBlog) => {
-    try {
-      const result = await blogService.createNew(newBlog)
-      setBlogs(blogs.concat(result))
-      blogFormRef.current.toggleVisibility()
-      dispatch(
-        updateNotif({
-          msg: `a new blog ${result.title} by ${result.author} added`,
-          isError: false,
-        })
-      )
-    } catch (exception) {
-      dispatch(updateNotif({ msg: 'adding a blog failed', isError: true }))
-    }
-  }
-
   const handleLikeUpdate = async (id, blog) => {
     const result = await blogService.updateLikes(id, blog)
     setBlogs(
@@ -95,7 +78,7 @@ const App = () => {
     if (isSure) {
       const deleteSuccess = (await blogService.deleteBlog(blog)).status
       if (deleteSuccess === 204) {
-        setBlogs(blogs.filter((b) => b.id !== blog.id))
+        setBlogsa(blogs.filter((b) => b.id !== blog.id))
         dispatch(updateNotif({ msg: `Deleted ${blog.title}`, isError: false }))
       } else {
         dispatch(
@@ -153,17 +136,13 @@ const App = () => {
           hideLabel="cancel"
           ref={blogFormRef}
         >
-          <BlogForm addBlog={handleBlogCreation} />
+          <BlogForm blogFormRef={blogFormRef} />
         </Togglable>
-        {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            updateBlogInfo={handleLikeUpdate}
-            user={user}
-            onDelete={handleBlogDeletion}
-          />
-        ))}
+        <BlogList
+          updateBlogInfo={handleLikeUpdate}
+          user={user}
+          onDelete={handleBlogDeletion}
+        />
       </div>
     )
   }

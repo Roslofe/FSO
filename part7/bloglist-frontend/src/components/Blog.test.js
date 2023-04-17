@@ -11,15 +11,21 @@ test('displays blog title & author but no url etc.', () => {
     url: 'notarealblog.com',
     likes: 3,
     user: {
-      name: 'Person 1'
-    }
+      name: 'Person 1',
+    },
   }
-  render(<Blog blog={blog}/>)
+  render(<Blog blog={blog} />)
+
   const defaultElement = screen.getByText('Test blog Example author')
+
   expect(defaultElement).toBeDefined()
+
   const urlElement = screen.queryByText('notarealblog.com')
+
   expect(urlElement).toBeNull()
+
   const likesElement = screen.queryByText('3')
+
   expect(likesElement).toBeNull()
 })
 
@@ -30,14 +36,14 @@ test('when the view-button is pressed, shows likes', async () => {
     url: 'notarealblog.com',
     likes: 3,
     user: {
-      name: 'Person 1'
-    }
+      name: 'Person 1',
+    },
   }
 
   const blogUser = {
-    username: 'Person1'
+    username: 'Person1',
   }
-  render(<Blog blog={blog} user={blogUser}/>)
+  render(<Blog blog={blog} user={blogUser} />)
 
   const user = userEvent.setup()
 
@@ -59,15 +65,15 @@ test('when a blog is liked twice, the event handler is called twice', async () =
     user: {
       name: 'Person 1',
       id: 1,
-    }
+    },
   }
 
   const blogUser = {
-    username: 'Person1'
+    username: 'Person1',
   }
   const mockLike = jest.fn()
 
-  render(<Blog blog={blog} user={blogUser} updateBlogInfo={mockLike}/>)
+  render(<Blog blog={blog} user={blogUser} updateBlogInfo={mockLike} />)
 
   const user = userEvent.setup()
   const viewButton = screen.getByText('view')
