@@ -1,0 +1,9 @@
+.errorMsg {
+  color: firebrick;
+  font-size: 20px;
+}
+
+.notifMsg {
+  color: seagreen;
+  font-size: 20px;
+}
