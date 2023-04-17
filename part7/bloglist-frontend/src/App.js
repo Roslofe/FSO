@@ -5,15 +5,17 @@ import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { useDispatch } from 'react-redux'
+import { updateNotif } from './reducers/notifReducer'
 import './index.css'
 
 const App = () => {
+  const dispatch = useDispatch()
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [msg, setMsg] = useState(null)
-  const [isError, setError] = useState(false)
+
   useEffect(() => {
     blogService
       .getAll()
@@ -40,9 +42,12 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      updateNotif('login successful', false)
+      console.log('login success')
+      dispatch(updateNotif({ msg: 'login successful', isError: false }))
     } catch (exception) {
-      updateNotif('wrong username or password', true)
+      dispatch(
+        updateNotif({ msg: 'wrong username or password', isError: true })
+      )
     }
   }
 
@@ -51,7 +56,7 @@ const App = () => {
     window.localStorage.clear()
     blogService.setToken(null)
     setUser(null)
-    updateNotif('logged out', false)
+    dispatch(updateNotif({ msg: 'logged out', isError: false }))
   }
 
   const handleBlogCreation = async (newBlog) => {
@@ -59,9 +64,14 @@ const App = () => {
       const result = await blogService.createNew(newBlog)
       setBlogs(blogs.concat(result))
       blogFormRef.current.toggleVisibility()
-      updateNotif(`a new blog ${result.title} by ${result.author} added`, false)
+      dispatch(
+        updateNotif({
+          msg: `a new blog ${result.title} by ${result.author} added`,
+          isError: false,
+        })
+      )
     } catch (exception) {
-      updateNotif('adding a blog failed', true)
+      dispatch(updateNotif({ msg: 'adding a blog failed', isError: true }))
     }
   }
 
@@ -86,26 +96,20 @@ const App = () => {
       const deleteSuccess = (await blogService.deleteBlog(blog)).status
       if (deleteSuccess === 204) {
         setBlogs(blogs.filter((b) => b.id !== blog.id))
-        updateNotif(`Deleted ${blog.title}`, false)
+        dispatch(updateNotif({ msg: `Deleted ${blog.title}`, isError: false }))
       } else {
-        updateNotif(`Deleting ${blog.title} failed`, true)
+        dispatch(
+          updateNotif({ msg: `Deleting ${blog.title} failed`, isError: true })
+        )
       }
     }
-  }
-
-  const updateNotif = (msg, error) => {
-    setError(error)
-    setMsg(msg)
-    setTimeout(() => {
-      setMsg(null)
-    }, 5000)
   }
 
   if (user === null) {
     return (
       <div>
         <h1>Log into application</h1>
-        <Notification msg={msg} isError={isError} />
+        <Notification />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -137,7 +141,7 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
-        <Notification msg={msg} isError={isError} />
+        <Notification />
         <form onSubmit={handleLogout}>
           <div>
             {user.name} logged in
