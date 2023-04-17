@@ -5,42 +5,34 @@ import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { updateNotif } from './reducers/notifReducer'
 import { setBlogs } from './reducers/blogReducer'
+import { logIn, logOut } from './reducers/userReducer'
 import './index.css'
 
 const App = () => {
   const dispatch = useDispatch()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-
+  const user = useSelector((state) => state.user)
   useEffect(() => {
     blogService.getAll().then((blogs) => dispatch(setBlogs(blogs)))
   }, [])
 
-  useEffect(() => {
-    const bloglistUserJSON = window.localStorage.getItem('bloglistUser')
-    if (bloglistUserJSON) {
-      const user = JSON.parse(bloglistUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
   const blogFormRef = useRef()
 
   const handleLogin = async (event) => {
     event.preventDefault()
     console.log('Attempting login', username, password)
     try {
-      const user = await loginService.login({ username, password })
-      blogService.setToken(user.token)
-      window.localStorage.setItem('bloglistUser', JSON.stringify(user))
-      setUser(user)
+      const newUser = await loginService.login({ username, password })
+      console.log('got user')
+      window.localStorage.setItem('bloglistUser', JSON.stringify(newUser))
+      blogService.setToken(newUser.token)
       setUsername('')
       setPassword('')
-      console.log('login success')
+      dispatch(logIn(newUser))
       dispatch(updateNotif({ msg: 'login successful', isError: false }))
     } catch (exception) {
       dispatch(
@@ -53,7 +45,7 @@ const App = () => {
     event.preventDefault()
     window.localStorage.clear()
     blogService.setToken(null)
-    setUser(null)
+    dispatch(logOut(user))
     dispatch(updateNotif({ msg: 'logged out', isError: false }))
   }
 
