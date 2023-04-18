@@ -6,6 +6,7 @@ import BlogList from './components/BlogList'
 import Login from './components/Login'
 import Users from './components/Users'
 import User from './components/User'
+import Blog from './components/Blog'
 import blogService from './services/blogs'
 import userService from './services/users'
 import { useDispatch, useSelector } from 'react-redux'
@@ -20,6 +21,7 @@ const App = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
   const allUsers = useSelector((state) => state.allUsers)
+  const blogs = useSelector((state) => state.blogs)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => dispatch(setBlogs(blogs)))
@@ -36,9 +38,14 @@ const App = () => {
     dispatch(updateNotif({ msg: 'logged out', isError: false }))
   }
 
-  const match = useMatch('/users/:id')
-  const selectedUser = match
-    ? allUsers.find((u) => u.id === match.params.id)
+  const userMatch = useMatch('/users/:id')
+  const selectedUser = userMatch
+    ? allUsers.find((u) => u.id === userMatch.params.id)
+    : null
+
+  const blogMatch = useMatch('/blogs/:id')
+  const selectedBlog = blogMatch
+    ? blogs.find((b) => b.id === blogMatch.params.id)
     : null
 
   if (user === null) {
@@ -59,6 +66,7 @@ const App = () => {
         <Routes>
           <Route path="/users" element={<Users />} />
           <Route path="/users/:id" element={<User user={selectedUser} />} />
+          <Route path="/blogs/:id" element={<Blog blog={selectedBlog} />} />
           <Route
             path="/"
             element={
@@ -71,7 +79,7 @@ const App = () => {
                 >
                   <BlogForm blogFormRef={blogFormRef} />
                 </Togglable>
-                <BlogList user={user} />
+                <BlogList />
               </div>
             }
           />
