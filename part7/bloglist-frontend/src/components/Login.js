@@ -5,9 +5,14 @@ import loginService from '../services/login'
 import blogService from '../services/blogs'
 import { logIn } from '../reducers/userReducer'
 import { updateNotif } from '../reducers/notifReducer'
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
+import FloatingLabel from 'react-bootstrap/FloatingLabel'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -22,43 +27,44 @@ const Login = () => {
       setUsername('')
       setPassword('')
       dispatch(logIn(newUser))
-      dispatch(updateNotif({ msg: 'login successful', isError: false }))
+      dispatch(updateNotif({ msg: 'Login successful', isError: false }))
+      navigate('/')
     } catch (exception) {
       dispatch(
-        updateNotif({ msg: 'wrong username or password', isError: true })
+        updateNotif({ msg: 'Wrong username or password', isError: true })
       )
     }
   }
 
   return (
-    <div>
+    <div className="container">
       <h1>Log into application</h1>
       <Notification />
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
+      <Form onSubmit={handleLogin}>
+        <FloatingLabel label="Username" className="mb-3">
+          <Form.Control
             type="text"
             id="Username"
             value={username}
             name="Username"
+            placeholder="Insert username"
             onChange={({ target }) => setUsername(target.value)}
           />
-        </div>
-        <div>
-          password
-          <input
+        </FloatingLabel>
+        <FloatingLabel label="Password" className="mb-3">
+          <Form.Control
             type="password"
             id="Password"
             value={password}
             name="Password"
+            placeholder="Insert password"
             onChange={({ target }) => setPassword(target.value)}
           />
-        </div>
-        <button id="login" type="submit">
-          login
-        </button>
-      </form>
+        </FloatingLabel>
+        <Button id="login" type="submit">
+          Login
+        </Button>
+      </Form>
     </div>
   )
 }

@@ -3,9 +3,12 @@ import blogService from '../services/blogs'
 import userService from '../services/users'
 import { updateBlog, removeBlog } from '../reducers/blogReducer'
 import { updateUser } from '../reducers/allUsersReducer'
-import { setNotif, updateNotif } from '../reducers/notifReducer'
+import { updateNotif } from '../reducers/notifReducer'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
+import ListGroup from 'react-bootstrap/ListGroup'
 
 const Blog = ({ blog }) => {
   const dispatch = useDispatch()
@@ -48,12 +51,13 @@ const Blog = ({ blog }) => {
     const response = await blogService.addComment(blog.id, withComment)
     if (response.status === 200) {
       dispatch(updateBlog({ ...withComment, user: blog.user }))
-      dispatch(setNotif({ msg: 'comment added', isError: false }))
+      dispatch(updateNotif({ msg: 'Comment added', isError: false }))
       setComment('')
+      dispatch
     } else {
       dispatch(
-        setNotif({
-          msg: 'commenting failed. Note: comment cannot be empty',
+        updateNotif({
+          msg: 'Commenting failed. Note: comment cannot be empty',
           isError: true,
         })
       )
@@ -70,33 +74,34 @@ const Blog = ({ blog }) => {
         {blog.title} {blog.author}
       </h1>
       <a href={blog.url}>{blog.url}</a>
-      <div>
-        <span>{blog.likes} likes</span>
-        <button onClick={incrementLike}>like</button>
+      <div className="md-3">
+        <span className="pr-2">{blog.likes} likes</span>
+        <Button onClick={incrementLike}>Like</Button>
       </div>
-      <span>added by {blog.user.name}</span>
+      <span>Added by {blog.user.name}</span>
       {user.username === blog.user.username && (
         <div>
-          <button id="deleteBlog" onClick={deleteBlog}>
+          <Button id="deleteBlog" onClick={deleteBlog}>
             Delete
-          </button>
+          </Button>
         </div>
       )}
-      <h3>comments</h3>
-      <form onSubmit={addComment}>
-        <input
+      <h3>Comments</h3>
+      <Form onSubmit={addComment} className="mb-4">
+        <Form.Control
           type="text"
           name="comment"
           value={comment}
+          className="mb-3"
           onChange={({ target }) => setComment(target.value)}
         />
-        <button>add comment</button>
-      </form>
-      <ul>
+        <Button type="submit">add comment</Button>
+      </Form>
+      <ListGroup>
         {blog.comments.map((c) => (
-          <li key={blog.comments.indexOf(c)}>{c}</li>
+          <ListGroup.Item key={blog.comments.indexOf(c)}>{c}</ListGroup.Item>
         ))}
-      </ul>
+      </ListGroup>
     </div>
   )
 }

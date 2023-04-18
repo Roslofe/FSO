@@ -1,3 +1,5 @@
+import ListGroup from 'react-bootstrap/ListGroup'
+
 const User = ({ user }) => {
   if (!user) {
     return null
@@ -7,11 +9,13 @@ const User = ({ user }) => {
     <div>
       <h1>{user.name}</h1>
       <h3>Added blogs</h3>
-      <ul>
+      <ListGroup as="ul">
         {user.blogs.map((b) => (
-          <li key={b.id}>{b.title}</li>
+          <ListGroup.Item action as="li" key={b.id}>
+            {b.title}
+          </ListGroup.Item>
         ))}
-      </ul>
+      </ListGroup>
     </div>
   )
 }

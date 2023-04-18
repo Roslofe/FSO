@@ -8,6 +8,10 @@ import { createBlog } from '../reducers/blogReducer'
 import { updateNotif } from '../reducers/notifReducer'
 import { updateUser } from '../reducers/allUsersReducer'
 
+import Form from 'react-bootstrap/Form'
+import FloatingLabel from 'react-bootstrap/FloatingLabel'
+import Button from 'react-bootstrap/Button'
+
 const BlogForm = ({ blogFormRef }) => {
   const dispatch = useDispatch()
   const [title, setTitle] = useState('')
@@ -33,51 +37,57 @@ const BlogForm = ({ blogFormRef }) => {
       blogFormRef.current.toggleVisibility()
       dispatch(
         updateNotif({
-          msg: `a new blog ${result.title} by ${result.author} added`,
+          msg: `A new blog ${result.title} by ${result.author} added`,
           isError: false,
         })
       )
     } catch (exception) {
-      dispatch(updateNotif({ msg: 'adding a blog failed', isError: true }))
+      dispatch(updateNotif({ msg: 'Adding a blog failed', isError: true }))
     }
   }
 
   return (
     <div>
       <h1>New blog</h1>
-      <form onSubmit={newBlog}>
-        <div>
-          title:
-          <input
+      <Form onSubmit={newBlog}>
+        <FloatingLabel controlId="floatingInput" label="Title" className="mb-3">
+          <Form.Control
             className="blog-title"
             type="text"
             value={title}
             name="title"
+            placeholder="Insert title"
             onChange={({ target }) => setTitle(target.value)}
           />
-        </div>
-        <div>
-          author:
-          <input
+        </FloatingLabel>
+        <FloatingLabel
+          controlId="floatingInput"
+          label="Author"
+          className="mb-3"
+        >
+          <Form.Control
             className="blog-author"
             type="text"
             value={author}
             name="author"
+            placeholder="Insert author"
             onChange={({ target }) => setAuthor(target.value)}
           />
-        </div>
-        <div>
-          url:
-          <input
+        </FloatingLabel>
+        <FloatingLabel controlId="floatingInput" label="Url" className="mb-3">
+          <Form.Control
             className="blog-url"
             type="text"
             value={url}
             name="url"
+            placeholder="Insert Url"
             onChange={({ target }) => setUrl(target.value)}
           />
-        </div>
-        <button type="submit">create</button>
-      </form>
+        </FloatingLabel>
+        <Button className="mb-3" type="submit">
+          Create
+        </Button>
+      </Form>
     </div>
   )
 }
