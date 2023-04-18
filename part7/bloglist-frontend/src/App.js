@@ -48,20 +48,28 @@ const App = () => {
     ? blogs.find((b) => b.id === blogMatch.params.id)
     : null
 
+  const padding = {
+    padding: 5,
+  }
+
   if (user === null) {
     return <Login />
   } else {
     return (
       <div>
         <div>
-          <h1>blogs</h1>
+          <Link style={padding} to="/">
+            blogs
+          </Link>
+          <Link style={padding} to="/users">
+            users
+          </Link>
+          <span style={padding}>{user.name} logged in</span>
+          <button onClick={handleLogout}>logout</button>
+        </div>
+        <div>
+          <h1>blog app</h1>
           <Notification />
-          <form onSubmit={handleLogout}>
-            <div>
-              {user.name} logged in
-              <button type="submit">logout</button>
-            </div>
-          </form>
         </div>
         <Routes>
           <Route path="/users" element={<Users />} />
@@ -71,7 +79,6 @@ const App = () => {
             path="/"
             element={
               <div>
-                <Link to="/users">users</Link>
                 <Togglable
                   showLabel="add new blog"
                   hideLabel="cancel"

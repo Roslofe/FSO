@@ -45,7 +45,6 @@ const Blog = ({ blog }) => {
       <h1>
         {blog.title} {blog.author}
       </h1>
-      {console.log(blog)}
       <a href={blog.url}>{blog.url}</a>
       <div>
         <span>{blog.likes} likes</span>
