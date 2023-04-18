@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import blogService from '../services/blogs'
+import userService from '../services/users'
 
 import { createBlog } from '../reducers/blogReducer'
 import { updateNotif } from '../reducers/notifReducer'
+import { updateUser } from '../reducers/allUsersReducer'
 
 const BlogForm = ({ blogFormRef }) => {
   const dispatch = useDispatch()
@@ -23,6 +25,8 @@ const BlogForm = ({ blogFormRef }) => {
     try {
       const result = await blogService.createNew(newBlog)
       dispatch(createBlog(result))
+      const updatedUser = await userService.getOne(result.user.id)
+      dispatch(updateUser(updatedUser))
       setTitle('')
       setAuthor('')
       setUrl('')

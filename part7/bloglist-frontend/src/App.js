@@ -5,20 +5,25 @@ import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
 import Login from './components/Login'
 import Users from './components/Users'
+import User from './components/User'
 import blogService from './services/blogs'
+import userService from './services/users'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateNotif } from './reducers/notifReducer'
 import { setBlogs } from './reducers/blogReducer'
 import { logOut } from './reducers/userReducer'
-import { Routes, Route, Link } from 'react-router-dom'
+import { setUsers } from './reducers/allUsersReducer'
+import { Routes, Route, Link, useMatch } from 'react-router-dom'
 import './index.css'
 
 const App = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
+  const allUsers = useSelector((state) => state.allUsers)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => dispatch(setBlogs(blogs)))
+    userService.getAll().then((users) => dispatch(setUsers(users)))
   }, [])
 
   const blogFormRef = useRef()
@@ -30,6 +35,11 @@ const App = () => {
     dispatch(logOut(user))
     dispatch(updateNotif({ msg: 'logged out', isError: false }))
   }
+
+  const match = useMatch('/users/:id')
+  const selectedUser = match
+    ? allUsers.find((u) => u.id === match.params.id)
+    : null
 
   if (user === null) {
     return <Login />
@@ -48,6 +58,7 @@ const App = () => {
         </div>
         <Routes>
           <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<User user={selectedUser} />} />
           <Route
             path="/"
             element={

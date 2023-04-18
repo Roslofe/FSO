@@ -1,7 +1,9 @@
 import { useDispatch } from 'react-redux'
 import blogService from '../services/blogs'
+import userService from '../services/users'
 import { likeBlog, removeBlog } from '../reducers/blogReducer'
 import { updateNotif } from '../reducers/notifReducer'
+import { updateUser } from '../reducers/allUsersReducer'
 
 const BlogInfo = ({ blog, user }) => {
   const dispatch = useDispatch()
@@ -18,6 +20,8 @@ const BlogInfo = ({ blog, user }) => {
       const deleteSuccess = (await blogService.deleteBlog(blog)).status
       if (deleteSuccess === 204) {
         dispatch(removeBlog(blog.id))
+        const updatedUser = await userService.getOne(blog.user.id)
+        dispatch(updateUser(updatedUser))
         dispatch(updateNotif({ msg: `Deleted ${blog.title}`, isError: false }))
       } else {
         dispatch(
