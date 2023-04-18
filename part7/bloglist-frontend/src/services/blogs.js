@@ -28,8 +28,16 @@ const createNew = async (newBlog) => {
 }
 
 const updateLikes = async (id, updated) => {
-  const result = await axios.put(`${baseUrl}/${id}`, updated)
-  return await getSingular(result.data.id)
+  await axios.put(`${baseUrl}/${id}`, updated)
+}
+
+const addComment = async (id, updated) => {
+  try {
+    const result = await axios.post(`${baseUrl}/${id}/comments`, updated)
+    return result
+  } catch (exception) {
+    return exception
+  }
 }
 
 const deleteBlog = async (toDelete) => {
@@ -40,4 +48,11 @@ const deleteBlog = async (toDelete) => {
   return result
 }
 
-export default { getAll, setToken, createNew, updateLikes, deleteBlog }
+export default {
+  getAll,
+  setToken,
+  createNew,
+  updateLikes,
+  addComment,
+  deleteBlog,
+}

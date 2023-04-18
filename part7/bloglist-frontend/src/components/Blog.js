@@ -1,21 +1,23 @@
 import { useDispatch, useSelector } from 'react-redux'
 import blogService from '../services/blogs'
 import userService from '../services/users'
-import { likeBlog, removeBlog } from '../reducers/blogReducer'
+import { updateBlog, removeBlog } from '../reducers/blogReducer'
 import { updateUser } from '../reducers/allUsersReducer'
-import { updateNotif } from '../reducers/notifReducer'
+import { setNotif, updateNotif } from '../reducers/notifReducer'
 import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 const Blog = ({ blog }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const [comment, setComment] = useState('')
 
   const user = useSelector((state) => state.user)
 
   const incrementLike = async () => {
     const updated = { ...blog, likes: blog.likes + 1, user: blog.user.id }
     await blogService.updateLikes(blog.id, updated)
-    dispatch(likeBlog(blog.id))
+    dispatch(updateBlog({ ...updated, user: blog.user }))
   }
 
   const deleteBlog = async () => {
@@ -33,6 +35,28 @@ const Blog = ({ blog }) => {
           updateNotif({ msg: `Deleting ${blog.title} failed`, isError: true })
         )
       }
+    }
+  }
+
+  const addComment = async (event) => {
+    event.preventDefault()
+    const withComment = {
+      ...blog,
+      comments: [...blog.comments, comment],
+      user: blog.user.id,
+    }
+    const response = await blogService.addComment(blog.id, withComment)
+    if (response.status === 200) {
+      dispatch(updateBlog({ ...withComment, user: blog.user }))
+      dispatch(setNotif({ msg: 'comment added', isError: false }))
+      setComment('')
+    } else {
+      dispatch(
+        setNotif({
+          msg: 'commenting failed. Note: comment cannot be empty',
+          isError: true,
+        })
+      )
     }
   }
 
@@ -58,6 +82,21 @@ const Blog = ({ blog }) => {
           </button>
         </div>
       )}
+      <h3>comments</h3>
+      <form onSubmit={addComment}>
+        <input
+          type="text"
+          name="comment"
+          value={comment}
+          onChange={({ target }) => setComment(target.value)}
+        />
+        <button>add comment</button>
+      </form>
+      <ul>
+        {blog.comments.map((c) => (
+          <li key={blog.comments.indexOf(c)}>{c}</li>
+        ))}
+      </ul>
     </div>
   )
 }
